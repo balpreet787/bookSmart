@@ -39,16 +39,8 @@ export default function (state = initialState, action) {
                 ...state,
                 user: null,
             };
+        case SIGNUP_FAIL:
         case LOGIN_FAIL:
-            localStorage.removeItem('access');
-            localStorage.removeItem('refresh');
-            return {
-                ...state,
-                access: null,
-                refresh: null,
-                isAuthenticated: false,
-                user: null,
-            };
         case LOGOUT:
             localStorage.removeItem('access');
             localStorage.removeItem('refresh');
@@ -61,11 +53,11 @@ export default function (state = initialState, action) {
             };
         case PASSWORD_RESET_SUCCESS:
         case PASSWORD_RESET_CONFIRM_SUCCESS:
-            return {
-                ...state,
-            };
         case PASSWORD_RESET_FAIL:
         case PASSWORD_RESET_CONFIRM_FAIL:
+        case SIGNUP_SUCCESS:
+        case ACTIVATION_SUCCESS:
+        case ACTIVATION_FAIL:
             return {
                 ...state,
             };

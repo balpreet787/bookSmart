@@ -1,11 +1,92 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { signup } from '../actions/auth';
 
-const SignUp = (props) => {
+const SignUp = ({ signup, isAuthenticated }) => {
+    const [accountCreated, setAccountCreated] = useState(false);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        re_password: '',
+    });
+
+    const { name, email, password, re_password } = formData;
+
+    const onChange = e =>
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    const onSubmit = async e => {
+        e.preventDefault();
+        if (password === re_password) {
+            signup(name, email, password, re_password);
+            setAccountCreated(true);
+        }
+    }
+
+    if (isAuthenticated) {
+        return <Navigate to='/' />;
+    }
+    if (accountCreated) {
+        return <Navigate to='/login' />;
+    }
+
     return (
         <div>
-            SignUp
+            <h1>Sign Up</h1>
+            <form className='form-group' onSubmit={e => onSubmit(e)}>
+                <div>
+                    <input className='form-control'
+                        type='text'
+                        placeholder='Name'
+                        name='name'
+                        value={name}
+                        onChange={e => onChange(e)}
+                        required
+                    />
+                </div>
+                <div>
+                    <input className='form-control'
+                        type='email'
+                        placeholder='Email*'
+                        name='email'
+                        value={email}
+                        onChange={e => onChange(e)}
+                        required
+                    />
+                </div>
+                <div>
+                    <input className='form-control'
+                        type='password'
+                        placeholder='Password*'
+                        name='password'
+                        value={password}
+                        onChange={e => onChange(e)}
+                        required
+                    />
+                </div>
+                <div>
+                    <input className='form-control'
+                        type='password'
+                        placeholder='Confirm Password*'
+                        name='re_password'
+                        value={re_password}
+                        onChange={e => onChange(e)}
+                        required
+                    />
+                </div>
+                <button className='btn btn-primary mt-3' type='submit'>Sign Up</button>
+            </form>
+            <p className='mt-3'>
+                Already have an account? <Link to='/login'>Login</Link>
+            </p>
         </div>
     );
 }
 
-export default SignUp;
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated,
+}); // mapStateToProps
+
+export default connect(mapStateToProps, { signup })(SignUp);
