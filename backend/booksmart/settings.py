@@ -119,6 +119,9 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=config('REFRESH_TOKEN_LIFETIME', default=30, cast=int)),
 }
 
+DOMAIN = config( 'FRONTEND_URL', default='http://localhost:5173')
+SITE_NAME = 'Booksmart'
+
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,

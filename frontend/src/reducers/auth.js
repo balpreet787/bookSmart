@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGIN_FAIL, USER_LOADED_SUCCESS, USER_LOADED_FAIL, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAIL, LOGOUT } from '../actions/types';
+import { LOGIN_SUCCESS, LOGIN_FAIL, USER_LOADED_SUCCESS, USER_LOADED_FAIL, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAIL, LOGOUT, PASSWORD_RESET_SUCCESS, PASSWORD_RESET_FAIL, PASSWORD_RESET_CONFIRM_SUCCESS, PASSWORD_RESET_CONFIRM_FAIL, SIGNUP_SUCCESS, SIGNUP_FAIL, ACTIVATION_SUCCESS, ACTIVATION_FAIL } from '../actions/types';
 
 const initialState = {
     access: localStorage.getItem('access'),
@@ -58,6 +58,16 @@ export default function (state = initialState, action) {
                 refresh: null,
                 isAuthenticated: false,
                 user: null,
+            };
+        case PASSWORD_RESET_SUCCESS:
+        case PASSWORD_RESET_CONFIRM_SUCCESS:
+            return {
+                ...state,
+            };
+        case PASSWORD_RESET_FAIL:
+        case PASSWORD_RESET_CONFIRM_FAIL:
+            return {
+                ...state,
             };
         default:
             return state;
