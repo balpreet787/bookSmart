@@ -1,7 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-const Home = () => {
+const Home = ({ isAuthenticated }) => {
+
+    if (!isAuthenticated) {
+        return <Navigate to='/login' />;
+    }
     return (
         <div>
             <h1>Home</h1>
@@ -13,4 +18,8 @@ const Home = () => {
     );
 }
 
-export default Home;
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps)(Home);

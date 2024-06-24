@@ -1,33 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { logout } from '../actions/auth';
 import { connect } from 'react-redux';
+import setting from '../assets/setting.svg';
 
 
-const Navbar = ({ logout, isAuthenticated }) => {
-    const guestLinks = (
-        <div className="space-x-4">
-            <Link to="/login" className="px-4 py-2 text-white bg-blue-700 rounded-md">Login</Link>
-            <Link to="/signup" className="px-4 py-2 text-white bg-blue-700 rounded-md">Sign Up</Link>
-        </div>
-    );
+const Navbar = ({ isAuthenticated }) => {
 
     const authLinks = (
         <div className="space-x-4">
-            <Link to="/settings" className="px-4 py-2 text-white bg-blue-700 rounded-md">Settings</Link>
-            <a href='#!' onClick={logout} className="px-4 py-2 text-white bg-blue-700 rounded-md">Logout</a>
+            <Link to="/settings"><img src={setting} className=" h-14 w-10" alt="Settings" /></Link>
         </div>
     );
 
 
 
     return (
-        <nav className="flex items-center justify-between p-4 bg-blue-500">
+        <nav className="flex items-center justify-between px-4 py-1 bg-blue-500">
             <div className="text-white">
-                <h1 className="text-2xl font-bold">BookSmart</h1>
+                <h1 className="text-2xl font-bold"> <Link to="/">BookSmart</Link>
+                </h1>
             </div>
             <div>
-                {isAuthenticated ? authLinks : guestLinks}
+                {isAuthenticated ? authLinks : null}
             </div>
         </nav>
     );
@@ -37,4 +31,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated
 });
 
-export default connect(mapStateToProps, { logout })(Navbar);
+export default connect(mapStateToProps, {})(Navbar);

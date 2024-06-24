@@ -23,10 +23,8 @@ const ResetPassword = ({ reset_password }) => {
     }
 
     return (
-        <div>
-            <h1 className='text-2xl font-bold'>Reset Password</h1>
-            <form className='form-group' onSubmit={e => onSubmit(e)}>
-                <div>
+        <div className='flex flex-col items-center mt-14'>
+            <form className='mx-auto flex flex-col gap-3 w-3/4' onSubmit={e => onSubmit(e)}>
                     <input className='border border-gray-300 rounded-md p-2'
                         type='email'
                         placeholder='Email'
@@ -35,7 +33,6 @@ const ResetPassword = ({ reset_password }) => {
                         onChange={e => onChange(e)}
                         required
                     />
-                </div>
                 <button className='bg-blue-500 text-white px-4 py-2 mt-3 rounded-md' type='submit'>Reset Password</button>
             </form>
         </div>

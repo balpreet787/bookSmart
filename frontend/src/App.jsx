@@ -7,6 +7,7 @@ import SignUp from "./containers/Signup";
 import Activate from "./containers/Activate";
 import ResetPassword from "./containers/ResetPassword";
 import ResetPasswordConfirm from "./containers/ResetPasswordConfirm";
+import Settings from "./containers/Settings";
 import { Provider } from 'react-redux';
 import store from "./store";
 
@@ -21,6 +22,7 @@ const App = () => (
             <Route path="/signup" element={<SignUp />} />
             <Route path="/activate/:uid/:token" element={<Activate />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path='settings' element={<Settings />} />
             <Route path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfirm />} />
           </Routes>
         </Layout>

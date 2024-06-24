@@ -18,8 +18,7 @@ const Activate = ({ activate }) => {
 
     return (
         <div>
-            <h1>Activate Account</h1>
-            <button className='btn btn-primary mt-3' onClick={activate_account}>Activate Account</button>
+            <button className='mt-28 rounded-xl mx-auto bg-blue-500 px-8 py-2 text-white' onClick={activate_account}>Activate Account</button>
         </div>
     );
 }

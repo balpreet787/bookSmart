@@ -34,10 +34,10 @@ const SignUp = ({ signup, isAuthenticated }) => {
 
     return (
         <div>
-            <h1>Sign Up</h1>
-            <form className='form-group' onSubmit={e => onSubmit(e)}>
+            <h1 className='text-2xl mt-10 text-center'>Sign Up</h1>
+            <form className='mx-auto flex flex-col gap-3 w-3/4' onSubmit={e => onSubmit(e)}>
                 <div>
-                    <input className='form-control'
+                    <input className='border-b p-2 w-full focus:outline-none focus:border-black'
                         type='text'
                         placeholder='Name'
                         name='name'
@@ -47,7 +47,7 @@ const SignUp = ({ signup, isAuthenticated }) => {
                     />
                 </div>
                 <div>
-                    <input className='form-control'
+                    <input className='border-b p-2 w-full focus:outline-none focus:border-black'
                         type='email'
                         placeholder='Email*'
                         name='email'
@@ -57,7 +57,7 @@ const SignUp = ({ signup, isAuthenticated }) => {
                     />
                 </div>
                 <div>
-                    <input className='form-control'
+                    <input className='border-b p-2 w-full focus:outline-none focus:border-black'
                         type='password'
                         placeholder='Password*'
                         name='password'
@@ -67,7 +67,7 @@ const SignUp = ({ signup, isAuthenticated }) => {
                     />
                 </div>
                 <div>
-                    <input className='form-control'
+                    <input className='border-b p-2 w-full focus:outline-none focus:border-black'
                         type='password'
                         placeholder='Confirm Password*'
                         name='re_password'
@@ -76,10 +76,10 @@ const SignUp = ({ signup, isAuthenticated }) => {
                         required
                     />
                 </div>
-                <button className='btn btn-primary mt-3' type='submit'>Sign Up</button>
+                <button className='mt-5 rounded-xl mx-auto bg-blue-500 px-8 py-2 text-white' type='submit'>Sign Up</button>
             </form>
-            <p className='mt-3'>
-                Already have an account? <Link to='/login'>Login</Link>
+            <p className='mt-10 mx-auto flex justify-center gap-4'>
+                Already have an account? <Link to='/login'><span className='text-blue-500 border p-2 rounded-xl'>Login</span></Link>
             </p>
         </div>
     );
