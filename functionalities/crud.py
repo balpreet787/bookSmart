@@ -35,9 +35,7 @@ def add_book(file):
         return False
 
 
-def create_book(main_window):
-    book = QFileDialog.getOpenFileName(main_window, "Choose a book", "", "PDF Files (*.pdf)")
-    add_book(book[0])
+
 
 
 def get_books():
