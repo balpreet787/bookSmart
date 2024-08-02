@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QFileDialog
 import shutil
 import os
 from pdf2image import convert_from_path
+
 BOOKS_DIR = './books'
 THUMB_DIR = './thumbnails'
 
@@ -35,9 +36,6 @@ def add_book(file):
         return False
 
 
-
-
-
 def get_books():
     all_books = []
     for path in os.listdir(BOOKS_DIR):
@@ -45,3 +43,10 @@ def get_books():
         all_books.append(absolute_path)
 
     return all_books
+
+
+def delete_book(book_name):
+    print("Deleting book " + book_name)
+    if os.path.exists(f"{BOOKS_DIR}/{book_name}.pdf"):
+        os.remove(f"{BOOKS_DIR}/{book_name}.pdf")
+        os.remove(f"{THUMB_DIR}/{book_name}.pdf.png")
