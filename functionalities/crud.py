@@ -50,3 +50,8 @@ def delete_book(book_name):
     if os.path.exists(f"{BOOKS_DIR}/{book_name}.pdf"):
         os.remove(f"{BOOKS_DIR}/{book_name}.pdf")
         os.remove(f"{THUMB_DIR}/{book_name}.pdf.png")
+
+
+def read_book(book_name):
+    if os.path.exists(f"{BOOKS_DIR}/{book_name}.pdf"):
+        pass
