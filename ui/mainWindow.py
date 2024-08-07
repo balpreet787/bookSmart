@@ -1,10 +1,14 @@
 import json
 import os
+
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import QMainWindow, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QFileDialog, \
     QPushButton, QMessageBox, QSpacerItem, QSizePolicy, QScrollArea
-from PySide6.QtGui import QPixmap, Qt, QImage
+from PySide6.QtGui import QPixmap, Qt, QImage, QShortcut, QKeySequence
+from PySide6.QtCore import QUrl
 from functionalities.crud import get_books, add_book, delete_book
-import fitz  # PyMuPDF
+import fitz
+from functionalities.sound import analyze_page, fetch_sounds
 
 
 def clear_layout(layout):
@@ -62,8 +66,32 @@ class BookSmartApp(QMainWindow):
         self.current_book = None
         self.current_page = 0
         self.page_number_label = QLabel()
+        self.book_name = None
+        self.next_page_shortcut = QShortcut(QKeySequence(Qt.Key_Right), self)
+        self.next_page_shortcut.activated.connect(lambda: self.next_page(self.book_name))
+
+        self.previous_page_shortcut = QShortcut(QKeySequence(Qt.Key_Left), self)
+        self.previous_page_shortcut.activated.connect(lambda: self.previous_page(self.book_name))
+
+        self.audio_output = QAudioOutput()
+        self.mood_player = QMediaPlayer()
+        self.mood_player.setAudioOutput(self.audio_output)
+        self.environment_player = QMediaPlayer()
+        self.environment_player.setAudioOutput(self.audio_output)
 
         self.load_books()
+
+    def play_sounds(self, sounds):
+        self.mood_player.stop()
+        self.environment_player.stop()
+        if sounds is not None:
+            if sounds["mood"]:
+                self.mood_player.setSource(sounds["mood"])
+                print(sounds["mood"])
+                self.mood_player.play()
+            if sounds["environment"]:
+                self.environment_player.setSource(sounds["environment"])
+                self.environment_player.play()
 
     def create_delete_button(self, book_name):
         delete_button = QPushButton(f"Delete {book_name}")
@@ -123,6 +151,7 @@ class BookSmartApp(QMainWindow):
         if confirm == QMessageBox.Yes:
             delete_book(book_name)
             self.load_books()
+            self.toggle_delete_buttons()
 
     def toggle_delete_buttons(self):
         for i in range(self.thumbnail_layout.count()):
@@ -202,6 +231,7 @@ class BookSmartApp(QMainWindow):
         clear_layout(self.thumbnail_layout)
 
         self.current_book = fitz.open("./books/" + book_name + ".pdf")
+        self.book_name = book_name
         self.showMaximized()
         if start_page == 0:
             self.show_page(start_from_beginning=True)
@@ -225,9 +255,12 @@ class BookSmartApp(QMainWindow):
         scroll_area = QScrollArea()
         scroll_area.setWidget(img_label)
         scroll_area.setWidgetResizable(True)
-
         self.thumbnail_layout.addWidget(scroll_area)
         self.page_number_label.setText(f"Page {self.current_page + 1}")
+        page_text = page.get_text()
+        page_theme = analyze_page(page_text)
+        page_sounds = fetch_sounds(page_theme)
+        self.play_sounds(page_sounds)
 
     def next_page(self, book_name):
         if self.current_page < len(self.current_book) - 1:

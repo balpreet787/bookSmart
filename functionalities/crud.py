@@ -1,3 +1,5 @@
+import json
+
 from PySide6.QtWidgets import QFileDialog
 import shutil
 import os
@@ -50,6 +52,19 @@ def delete_book(book_name):
     if os.path.exists(f"{BOOKS_DIR}/{book_name}.pdf"):
         os.remove(f"{BOOKS_DIR}/{book_name}.pdf")
         os.remove(f"{THUMB_DIR}/{book_name}.pdf.png")
+
+    bookmark_json_path = './bookmarks/bookmarks.json'
+    data = {}
+    if os.path.exists(bookmark_json_path):
+        try:
+            with open(bookmark_json_path, 'r') as file:
+                data = json.load(file)
+        except json.JSONDecodeError:
+            data = {}
+    if data[book_name]:
+        del data[book_name]
+    with open(bookmark_json_path, 'w') as file:
+        json.dump(data, file)
 
 
 def read_book(book_name):
