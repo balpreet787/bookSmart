@@ -8,6 +8,14 @@ FREESOUND_API_KEY = os.getenv('FREESOUND_API_KEY')
 
 
 def analyze_page(page):
+    """
+    Analyze the sentiment of a page and determine the mood.
+
+    :param page: a string containing the text of the page
+    :precondition: page must be a non-empty string
+    :postcondition: determines the mood based on the sentiment analysis of the text
+    :return: a string representing the mood
+    """
     blob = TextBlob(page)
     sentiment = blob.sentiment.polarity
     words = blob.words.singularize()
@@ -28,21 +36,30 @@ def analyze_page(page):
     elif sentiment < -0.5:
         mood = "angry"
 
-    environments = [
-        "rain", "forest", "beach", "city", "battle", "night",
-        "morning", "desert", "mountains", "ocean", "crowd",
-        "fireplace", "café", "snow", "garden"
-    ]
-    detected_environment = next((env for env in environments if env in words), "general")
-    print(f"{mood} and {detected_environment}")
-    return {"mood": mood, "environment": detected_environment}
+    return mood
 
 
 def construct_query_url(query):
+    """
+    Construct a URL for querying the Freesound API.
+
+    :param query: the search query string
+    :precondition: query must be a non-empty string
+    :postcondition: returns a properly formatted URL for the Freesound API
+    :return: a string representing the URL for the Freesound API query
+    """
     return f"https://freesound.org/apiv2/search/text/?query={query}&token={FREESOUND_API_KEY}"
 
 
 def fetch_sound_details(sound_id):
+    """
+    Fetch the sound details from Freesound API using the sound ID.
+
+    :param sound_id: the ID of the sound
+    :precondition: sound_id must be a valid Freesound sound ID
+    :postcondition: returns the URL of the sound preview if available
+    :return: a string representing the URL of the sound preview, or None if not found
+    """
     url = f"https://freesound.org/apiv2/sounds/{sound_id}/?token={FREESOUND_API_KEY}"
     response = requests.get(url)
     if response.status_code == 200:
@@ -58,6 +75,14 @@ def fetch_sound_details(sound_id):
 
 
 def fetch_sound_url(query):
+    """
+    Fetch the URL of the sound preview from Freesound API based on a search query.
+
+    :param query: the search query string
+    :precondition: query must be a non-empty string
+    :postcondition: returns the URL of the first sound preview if available
+    :return: a string representing the URL of the sound preview, or None if not found
+    """
     url = construct_query_url(query)
     response = requests.get(url)
     if response.status_code == 200:
@@ -71,16 +96,19 @@ def fetch_sound_url(query):
 
 
 def fetch_sounds(sounds):
-    mood_query = f"{sounds['mood']} lofi sound"
-    environment_query = f"{sounds['environment']} sound"
+    """
+    Fetch the mood sound URL based on the given mood.
 
-    play_sounds = {}
+    :param sounds: a string representing the mood
+    :precondition: sounds must be a valid mood string
+    :postcondition: returns the URL of the sound preview if available
+    :return: a string representing the URL of the sound preview, or None if not found
+    """
+    mood_query = f"{sounds} lofi sound"
+
+    play_sound = None
     mood_sound_url = fetch_sound_url(mood_query)
-    environment_sound_url = fetch_sound_url(environment_query)
 
     if mood_sound_url:
-        play_sounds["mood"] = mood_sound_url
-    if environment_sound_url:
-        play_sounds["environment"] = environment_sound_url
-    print(play_sounds)
-    return play_sounds if play_sounds else None
+        play_sound = mood_sound_url
+    return play_sound if play_sound else None
