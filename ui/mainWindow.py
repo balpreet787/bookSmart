@@ -100,7 +100,7 @@ class BookSmartApp(QMainWindow):
         self.delete_book_option.triggered.connect(self.toggle_delete_buttons)
 
         self.current_book = None
-        self.current_page = 0
+        self.bookmarks = {}
         self.page_number_label = QLabel()
         self.book_name = None
         self.next_page_shortcut = QShortcut(QKeySequence(Qt.Key_Right), self)
@@ -178,7 +178,8 @@ class BookSmartApp(QMainWindow):
         container_layout.setAlignment(Qt.AlignCenter)
         container.setLayout(container_layout)
         self.load_bookmark(book_name)
-        continue_book_button.clicked.connect(lambda checked, selected_book=book_name, start_page=self.current_page:
+        continue_book_button.clicked.connect(lambda checked, selected_book=book_name,
+                                                    start_page=self.bookmarks.get(book_name, 0):
                                              self.open_pdf(selected_book, start_page))
         start_book_fresh_button.clicked.connect(lambda checked, selected_book=book_name:
                                                 self.open_pdf(selected_book, start_page=0))
@@ -280,11 +281,11 @@ class BookSmartApp(QMainWindow):
             if os.path.exists(bookmark_json_path):
                 with open(bookmark_json_path, 'r') as file:
                     data = json.load(file)
-                self.current_page = data.get(book_name, 0)
+                self.bookmarks[book_name] = data.get(book_name, 0)
             else:
-                self.current_page = 0
+                self.bookmarks[book_name] = 0
         except json.JSONDecodeError:
-            self.current_page = 0
+            self.bookmarks[book_name] = 0
 
     def save_bookmark(self, book_name):
         """
@@ -302,7 +303,7 @@ class BookSmartApp(QMainWindow):
                     data = json.load(file)
             except json.JSONDecodeError:
                 data = {}
-        data[book_name] = self.current_page
+        data[book_name] = self.bookmarks.get(book_name, 0)
         with open(bookmark_json_path, 'w') as file:
             json.dump(data, file)
 
@@ -319,7 +320,6 @@ class BookSmartApp(QMainWindow):
         back_button = self.toolbar.addAction("Back")
         back_button.triggered.connect(lambda: self.load_books())
 
-        # Create a custom layout for navigation buttons and page number
         nav_widget = QWidget()
         nav_layout = QHBoxLayout()
 
@@ -358,8 +358,8 @@ class BookSmartApp(QMainWindow):
         :postcondition: displays the current page of the book
         """
         if start_from_beginning:
-            self.current_page = 0
-        page_num = self.current_page
+            self.bookmarks[self.book_name] = 0
+        page_num = self.bookmarks[self.book_name]
         if page_num < 0 or page_num >= len(self.current_book):
             return
         clear_layout(self.thumbnail_layout)
@@ -374,7 +374,7 @@ class BookSmartApp(QMainWindow):
         scroll_area.setWidget(img_label)
         scroll_area.setWidgetResizable(True)
         self.thumbnail_layout.addWidget(scroll_area)
-        self.page_number_label.setText(f"Page {self.current_page + 1}")
+        self.page_number_label.setText(f"Page {self.bookmarks[self.book_name] + 1}")
         page_text = page.get_text()
         page_theme = analyze_page(page_text)
         page_sounds = fetch_sounds(page_theme)
@@ -388,8 +388,8 @@ class BookSmartApp(QMainWindow):
         :precondition: book_name must be a non-empty string
         :postcondition: moves to the next page of the book and updates the bookmark
         """
-        if self.current_page < len(self.current_book) - 1:
-            self.current_page += 1
+        if self.bookmarks[book_name] < len(self.current_book) - 1:
+            self.bookmarks[book_name] += 1
             self.save_bookmark(book_name)
             self.show_page()
 
@@ -401,7 +401,7 @@ class BookSmartApp(QMainWindow):
         :precondition: book_name must be a non-empty string
         :postcondition: moves to the previous page of the book and updates the bookmark
         """
-        if self.current_page > 0:
-            self.current_page -= 1
+        if self.bookmarks[book_name] > 0:
+            self.bookmarks[book_name] -= 1
             self.save_bookmark(book_name)
             self.show_page()

@@ -104,7 +104,7 @@ def fetch_sounds(sounds):
     :postcondition: returns the URL of the sound preview if available
     :return: a string representing the URL of the sound preview, or None if not found
     """
-    mood_query = f"{sounds} lofi sound"
+    mood_query = f"{sounds} piano sound"
 
     play_sound = None
     mood_sound_url = fetch_sound_url(mood_query)
